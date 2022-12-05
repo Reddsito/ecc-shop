@@ -17,13 +17,12 @@ export class ProductController {
 
   @Get()
   findAll(@Query() paginationDto : PaginationDto) {
-    console.log(paginationDto)
     return this.productService.findAll(paginationDto);
   }
 
   @Get(':term')
   findOne(@Param('term') term: string) {
-    return this.productService.findOne(term);
+    return this.productService.findOnePlain(term);
   }
 
   @Patch(':id')

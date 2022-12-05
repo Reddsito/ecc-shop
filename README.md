@@ -22,3 +22,12 @@ docker-compose up -d
 ```
 
 6. Levantar el servidor ```yarn start:dev```
+
+7. Ejecutar SEED
+```
+http://localhost:3000/api/seed
+```
+
+## Stack Usado
+* PostgresSQL
+* Nest

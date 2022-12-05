@@ -1,7 +1,8 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { ProductImage } from './product-image.entity';
 
 
-@Entity()
+@Entity({ name: 'products' })
 export class Product {
 
     @PrimaryGeneratedColumn('uuid')
@@ -40,6 +41,20 @@ export class Product {
     @Column('text')
     gender: string
 
+    @Column('text', {
+        array: true,
+        default: []
+    })
+    tags: string[]
+
+    @OneToMany(
+        () => ProductImage,
+        productImage => productImage.product,
+        //eager sirve para que al obtener un producto, automaticamente venga con sus relaciones.
+        { cascade: true, eager: true }
+    )
+    images?: ProductImage[];
+
     @BeforeInsert()
     checkSlugInster(){
         if ( !this.slug ) {
@@ -62,14 +77,7 @@ export class Product {
             .replaceAll("'", '')
     }
     
-    @Column('text', {
-        array: true,
-        default: []
-    })
-    tags: string[]
-
-
-    //TODO: image
+ 
 
 
 
