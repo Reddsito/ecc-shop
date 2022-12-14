@@ -12,6 +12,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { Product, ProductImage } from './entities/index';
 import { PaginationDto } from '../common/dtos/pagination.dto';
 import { validate as isUUID } from 'uuid';
+import { User } from '../auth/entities/user.entity';
 
 @Injectable()
 export class ProductService {
@@ -26,7 +27,7 @@ export class ProductService {
     private readonly dataSource: DataSource
   ) {}
 
-  async create(createProductDto: CreateProductDto) {
+  async create(createProductDto: CreateProductDto, user: User) {
     try {
       const { images = [], ...productDetails } = createProductDto;
 
@@ -35,8 +36,9 @@ export class ProductService {
 
         //Al estar creando las imagenes dentro del create del product, no es necesario que, en el create de la imagen declararemos a que producto pertenece, automaticamente colocará el producto al estar dentro de un create de un producto.
         images: images.map((image) =>
-          this.productImageRepository.create({ url: image }),
+          this.productImageRepository.create({ url: image })
         ),
+        user
       });
 
       await this.productRepository.save(product);
@@ -99,7 +101,7 @@ export class ProductService {
     };
   }
 
-  async update(id: string, updateProductDto: UpdateProductDto) {
+  async update(id: string, updateProductDto: UpdateProductDto, user: User) {
     const { images, ...toUpdate } = updateProductDto;
 
     const product = await this.productRepository.preload({ 
@@ -120,10 +122,11 @@ export class ProductService {
         await queryRunner.manager.delete( ProductImage, { product: { id } } )
 
         product.images = 
-        images.map( image => this.productImageRepository.create( { url: image } ) )
+        images.map( image => this.productImageRepository.create( 
+          { url: image } ) )
 
       } 
-
+      product.user = user;
       await queryRunner.manager.save( product )
       // await this.productRepository.save(product);
 
