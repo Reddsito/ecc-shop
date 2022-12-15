@@ -31,3 +31,6 @@ http://localhost:3000/api/seed
 ## Stack Usado
 * PostgresSQL
 * Nest
+
+##
+Documentación ``` http://localhost:3000/documentation ```(no está completa, pero puede ser una guía)
