@@ -1,21 +1,30 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule  } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const logger = new Logger('Boostrap')
+  const logger = new Logger('Boostrap');
 
-  app.setGlobalPrefix('api')
+  app.setGlobalPrefix('api');
 
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
-      forbidNonWhitelisted: true
-    })
-  )
+      forbidNonWhitelisted: true,
+    }),
+  );
+
+  const config = new DocumentBuilder()
+    .setTitle('Ecc RESTFull API')
+    .setDescription('Ecc shop endpoints')
+    .setVersion('1.0')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('documentation', app, document);
 
   await app.listen(process.env.PORT);
-  logger.log(`App running on port ${process.env.PORT}`)
+  logger.log(`App running on port ${process.env.PORT}`);
 }
 bootstrap();
